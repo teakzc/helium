@@ -5,7 +5,7 @@
   <p align="center"></p>
   
   Accelerate your game production using helium as the template
-  
+
   [![License](https://img.shields.io/github/license/teakzc/helium?style=for-the-badge)](https://github.com/teakzc/helium/blob/main/LICENSE)
   [![Documentation](https://img.shields.io/badge/Documentation-Website-blue?style=for-the-badge)](https://teakzc.github.io/helium/)
 </div>
