@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/teakzc/hydrogen/main/images/hydrogenicon.png" alt="Hydrogen Logo" width="256" height="256"/>
+  <img src="https://raw.githubusercontent.com/teakzc/helium/main/docs/assets/helium.svg" alt="Helium Logo" width="256" height="256"/>
 
   <h1 align="center"><b>helium</b></h1>
   <p align="center"></p>
@@ -13,15 +13,18 @@
 # ⭐ Features
 
 - Module lifecycle hooks
+- Flexible and doesn't force you
+- Utilizes Charm for state management and replication
+- Uses Lyra to easily store data.
 - Type-safe API
 
 ## 📦 Installation
 
 [Wally](https://wally.run/):
 ```bash
-hydrogen = "teakzc/hydrogen"
+helium = "teakzc/helium"
 ```
 [pesde](https://pesde.dev/):
 ```bash
-pesde add teakzc/hydrogen
+pesde add teakzc/helium
 ```

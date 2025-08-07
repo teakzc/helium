@@ -4,3 +4,6 @@
 # Roblox Studio lock files
 /*.rbxlx.lock
 /*.rbxl.lock
+
+docs/.vitepress/dist
+docs/.vitepress/cache

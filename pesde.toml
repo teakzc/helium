@@ -24,15 +24,8 @@ scripts = { name = "pesde/scripts_rojo", version = "^0.1.0", target = "lune" }
 rojo = { name = "pesde/rojo", version = "^7.4.4", target = "lune" }
 
 [dependencies]
-axis = { name = "killergg/axis", version = "^0.2.3-rc.2" }
 charm = { wally = "littensy/charm", version = "^0.10.0" }
 charm-sync = { wally = "littensy/charm-sync", version = "^0.3.0" }
 fusion = { wally = "elttob/fusion", version = "^0.3.0" }
-promise = { wally = "evaera/promise", version = "^4.0.0" }
-lemonsignal = { wally = "data-oriented-house/lemonsignal", version = "^1.10.0" }
 immut = { wally = "solarhorizon/immut", version = "^0.4.4" }
 lyra = { wally = "paradoxum-games/lyra", version = "^0.6.0" }
-t = { wally = "osyrisrblx/t", version = "^3.1.1" }
-sift = { wally = "csqrl/sift", version = "^0.0.11" }
-element = { name = "teakzc/element", version = "^0.3.0" }
-replecs = { name = "neond00m/replecs", version = "^0.2.0-dev.1" }
