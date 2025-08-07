@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/teakzc/helium/refs/heads/master/docs/assets/helium.svg" alt="Helium Logo" width="256" height="256"/>
+  <img src="https://raw.githubusercontent.com/teakzc/helium/refs/heads/main/docs/assets/helium.svg" alt="Helium Logo" width="256" height="256"/>
 
   <h1 align="center"><b>helium</b></h1>
   <p align="center"></p>
