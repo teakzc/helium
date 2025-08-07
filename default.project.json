@@ -1,18 +1,6 @@
 {
   "name": "helium",
   "tree": {
-    "$className": "DataModel",
-
-    "ReplicatedStorage": {
-      "roblox_packages": {
-        "$path": "roblox_packages"
-      }
-    },
-
-    "ServerScriptService": {
-      "Server": {
-        "$path": "src"
-      }
-    }
+    "$path": "src"
   }
 }
