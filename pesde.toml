@@ -1,6 +1,6 @@
 name = "teakzc/helium"
-version = "0.1.0"
-description = "all in one framework"
+version = "0.1.1"
+description = "Accelerate your game production using helium as the template"
 authors = ["teakzc"]
 includes = [
   "pesde.toml",
