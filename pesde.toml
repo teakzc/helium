@@ -2,12 +2,17 @@ name = "teakzc/helium"
 version = "0.1.0"
 description = "all in one framework"
 authors = ["teakzc"]
+includes = [
+  "pesde.toml",
+  "README.md",
+  "LICENSE",
+  "src/**/*.luau",
+]
 
 [target]
 environment = "roblox"
-
-[engines]
-lune = "^0.8.9"
+lib = "src/init.luau"
+build_files = ["src"]
 
 [indices]
 default = "https://github.com/pesde-pkg/index"
