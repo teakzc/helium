@@ -2,17 +2,22 @@
 
 local Players = game:GetService("Players")
 
---local Lyra = require("../roblox_packages/lyra")
+local Lyra = require("../roblox_packages/lyra")
 local Charm = require("../roblox_packages/charm")
 local CharmSync = require("../roblox_packages/charm-sync")
 local Immut = require("../roblox_packages/immut")
 
 type PlayerAtom = {
 	[string]: {
-		State: {},
-		Data: {},
+		State: {
+			[string]: any
+		},
+		Data: {
+			[string]: any
+		},
 	},
 }
+
 
 type Array<T> = { T }
 type Dictionary<T> = { [string]: T }
@@ -27,7 +32,7 @@ export type Methods = {
 	CreateCharmSyncer: (self: self, DataOverride: CharmSyncProperties) -> (),
 	LyraCharmSync: (self: self, Key: string, NewData: {}, OldData: {}) -> (),
 	HandleLogs: (Message: any) -> (),
-	OpenStore: (self: self, Store: any) -> (),
+	OpenStore: (self: self, StoreConfigs: Dictionary<any>) -> (),
 	YieldUntilWriteReady: (self: self, Client: Player) -> (),
 	AddChangedCallbacks: (self: self, Fn: (Key: string, NewData: {}, OldData: {}) -> ()) -> (),
 	SetState: (self: self, Client: Player, Callback: (draft: Dictionary<any>) -> ()) -> (),
@@ -108,7 +113,12 @@ function serverdata.HandleLogs(message)
 	end
 end
 
-function serverdata:OpenStore(Store: any)
+function serverdata:OpenStore(StoreConfigs: Dictionary<any>)
+
+	local Store = Lyra.createPlayerStore(
+		StoreConfigs
+	)
+
 	self.Store = Store
 
 	Players.PlayerAdded:Connect(function(Client: Player)
