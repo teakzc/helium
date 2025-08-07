@@ -7,5 +7,5 @@ return {
 	modules = modules,
 	serverdata = serverdata,
 	clientdata = clientdata,
-	ui = ui
+	ui = ui,
 }

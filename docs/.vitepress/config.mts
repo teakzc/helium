@@ -8,15 +8,20 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/' }
+      { text: 'Tutorial', link: '/' },
+      { text: 'API', link: '/' },
     ],
+
+    search: {
+      provider: "local"
+    },
 
     sidebar: [
       {
         text: 'Getting Started',
         items: [
           { text: 'Introduction', link: '/gettingstarted/introduction' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
+          { text: 'Using Helium', link: '/gettingstarted/usinghelium' }
         ]
       },
     ],
