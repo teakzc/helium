@@ -22,10 +22,6 @@
 
 ## 📦 Installation
 
-[Wally](https://wally.run/):
-```bash
-helium = "teakzc/helium"
-```
 [pesde](https://pesde.dev/):
 ```bash
 pesde add teakzc/helium
