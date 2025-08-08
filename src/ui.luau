@@ -50,17 +50,13 @@ function ui.CreateObject(
 		end
 	end
 
-	local UI: Instance = Scope:New(Object)(Properties)
-
 	if Props ~= nil then
-		for Property: string, Value: any in Props do
-			if (UI :: any)[Property] then
-				(UI :: any)[Property] = Value
-			else
-				warn(UI.Name .. " does not have " .. Property .. " as a property.")
-			end
+		for Property, Value in Props do
+			Properties[Property] = Value
 		end
 	end
+
+	local UI: Instance = Scope:New(Object)(Properties)
 
 	return UI
 end
@@ -69,8 +65,6 @@ function ui.Value<T>(Scope: Fusion.Scope<typeof(Fusion)>, SelectState: (State: D
 	local StateAtom = clientdata.PlayerAtom
 
 	local Value = Scope:Value(SelectState(StateAtom()))
-
-	print("My new value is ", SelectState(StateAtom()))
 
 	local CleanUp = Subscribe(StateAtom, function(CurrentState: any, PreviousState: any)
 		if CurrentState ~= PreviousState then
@@ -85,7 +79,7 @@ end
 
 function ui.Merge(A: { [any]: any }?, B: { [any]: any }?)
 	if A == nil or B == nil then
-		return
+		return A
 	end
 	for i, Value in B do
 		A[i] = Value
@@ -96,11 +90,11 @@ end
 
 function ui.Overwrite(A: { [any]: any }?, B: { [any]: any }?)
 	if A == nil or B == nil then
-		return
+		return A
 	end
-    A = B
+	A = B
 
-    return A
+	return A
 end
 
 return ui

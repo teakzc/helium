@@ -4,20 +4,18 @@ local Players = game:GetService("Players")
 
 local Lyra = require("../roblox_packages/lyra")
 local Charm = require("../roblox_packages/charm")
-local CharmSync = require("../roblox_packages/charm-sync")
 local Immut = require("../roblox_packages/immut")
 
 type PlayerAtom = {
 	[string]: {
 		State: {
-			[string]: any
+			[string]: any,
 		},
 		Data: {
-			[string]: any
+			[string]: any,
 		},
 	},
 }
-
 
 type Array<T> = { T }
 type Dictionary<T> = { [string]: T }
@@ -29,7 +27,7 @@ export type Properties = {
 	CharmSyncer: any,
 }
 export type Methods = {
-	CreateCharmSyncer: (self: self, DataOverride: CharmSyncProperties) -> (),
+	AddCharmSyncer: (self: self, CharmSyncer: any) -> (),
 	LyraCharmSync: (self: self, Key: string, NewData: {}, OldData: {}) -> (),
 	HandleLogs: (Message: any) -> (),
 	OpenStore: (self: self, StoreConfigs: Dictionary<any>) -> (),
@@ -56,21 +54,8 @@ type CharmSyncProperties = {
 	autoSerialize: boolean?,
 }
 
-function serverdata:CreateCharmSyncer(DataOverride: CharmSyncProperties)
-	local Data = {
-		atoms = {
-			PlayerAtom = self.PlayerAtom,
-		},
-		interval = 0,
-		preserveHistory = false,
-		autoSerialize = true,
-	}
-
-	for i, v in DataOverride do
-		Data[i] = v
-	end
-
-	self.CharmSyncer = CharmSync.server(Data)
+function serverdata:AddCharmSyncer(CharmSyncer: any)
+	self.CharmSyncer = CharmSyncer
 end
 
 function serverdata:LyraCharmSync(Key: string, NewData: {}, OldData: {})
@@ -85,8 +70,12 @@ function serverdata:LyraCharmSync(Key: string, NewData: {}, OldData: {})
 	end
 
 	self.PlayerAtom(Immut.produce(self.PlayerAtom(), function(draft)
-		draft[Player]["Data"] = NewData
-		return draft
+		if draft[Player] ~= nil then
+			draft[Player]["Data"] = NewData
+			return draft
+		else
+			return draft
+		end
 	end))
 end
 
@@ -114,10 +103,7 @@ function serverdata.HandleLogs(message)
 end
 
 function serverdata:OpenStore(StoreConfigs: Dictionary<any>)
-
-	local Store = Lyra.createPlayerStore(
-		StoreConfigs
-	)
+	local Store = Lyra.createPlayerStore(StoreConfigs)
 
 	self.Store = Store
 

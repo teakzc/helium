@@ -26,6 +26,7 @@ local modules = {
 		"PlayerRemoving",
 	},
 	TemporaryFunctions = {},
+	AddedFunctions = {},
 } :: self
 
 function modules:AddModules(ModuleHolder: Instance | Folder)
@@ -46,35 +47,49 @@ function modules:Start()
 
 	for _, Module in ModuleHolder:GetDescendants() do
 		if Module:IsA("ModuleScript") then
-			local RequiredModule = require(Module) :: any
-			for _, Target in self.TargettedFunctions do
-				if RequiredModule[Target] then
-					self.TemporaryFunctions[Target][Module.Name] = RequiredModule[Target]
+			local success, err = pcall(function()
+				local RequiredModule = require(Module) :: any
+				for _, Target in self.TargettedFunctions do
+					if RequiredModule[Target] then
+						self.TemporaryFunctions[Target][Module.Name] = RequiredModule[Target]
+					end
 				end
+			end)
+
+			if not success then
+				warn(Module.Name .. " has errored! " .. tostring(err))
 			end
 		end
 	end
 
-	for _, Function: () -> () in self.AddedFunctions do
-		Function()
+	if self.AddedFunctions ~= {} then
+		for _, Function: () -> () in self.AddedFunctions do
+			task.spawn(Function)
+		end
 	end
 
 	for Name, Function: () -> () in self.TemporaryFunctions["Initialize"] do
-		local StartTime = os.clock()
-		Function()
-		local RoundedTime = math.round((os.clock() - StartTime) * 100) / 100
-		print(string.format(Name .. " took [%s] ms to load!", RoundedTime))
+		task.spawn(function()
+			local StartTime = os.clock()
+			Function()
+			local RoundedTime = math.round((os.clock() - StartTime) * 100) / 100
+			print(string.format(Name .. " took [%s] ms to load!", RoundedTime))
+		end)
 	end
 
 	Players.PlayerAdded:Connect(function(Client: Player)
 		for _, Function: (Client: Player) -> () in self.TemporaryFunctions["PlayerAdded"] do
-			Function(Client)
+			task.spawn(function()
+				Function(Client)
+			end)
 		end
 	end)
 
 	Players.PlayerRemoving:Connect(function(Client: Player)
 		for _, Function: (Client: Player) -> () in self.TemporaryFunctions["PlayerRemoving"] do
-			Function(Client)
+			task.spawn(function()
+				Function(Client)
+			end)
 		end
 	end)
 end

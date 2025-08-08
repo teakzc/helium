@@ -9,5 +9,5 @@ return {
 	serverdata = serverdata,
 	clientdata = clientdata,
 	ui = ui,
-	defaultcomponents = defaultcomponents
+	defaultcomponents = defaultcomponents,
 }

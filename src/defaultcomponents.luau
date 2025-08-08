@@ -16,7 +16,7 @@ function defaultcomponents.AspectRatio(Scope: Fusion.Scope<typeof(Fusion)>, Pare
 end
 
 function defaultcomponents.VerticalBottomStackLayout(Scope: Fusion.Scope<typeof(Fusion)>)
-    return ui.CreateObject(Scope, "UIListLayout", {
+	return ui.CreateObject(Scope, "UIListLayout", {
 		Padding = UDim.new(0, 0),
 		FillDirection = Enum.FillDirection.Vertical,
 		SortOrder = Enum.SortOrder.LayoutOrder,
@@ -29,15 +29,15 @@ function defaultcomponents.VerticalBottomStackLayout(Scope: Fusion.Scope<typeof(
 end
 
 function defaultcomponents.VerticalCenterStackLayout(Scope: Fusion.Scope<typeof(Fusion)>)
-    return ui.CreateObject(Scope, "UIListLayout", {
-            Padding = UDim.new(0.05, 0),
-            FillDirection = Enum.FillDirection.Vertical,
-            SortOrder = Enum.SortOrder.LayoutOrder,
-            HorizontalAlignment = Enum.HorizontalAlignment.Center,
-            HorizontalFlex = Enum.UIFlexAlignment.None,
-            ItemLineAlignment = Enum.ItemLineAlignment.Automatic,
-            VerticalAlignment = Enum.VerticalAlignment.Center,
-            VerticalFlex = Enum.UIFlexAlignment.None,
+	return ui.CreateObject(Scope, "UIListLayout", {
+		Padding = UDim.new(0.05, 0),
+		FillDirection = Enum.FillDirection.Vertical,
+		SortOrder = Enum.SortOrder.LayoutOrder,
+		HorizontalAlignment = Enum.HorizontalAlignment.Center,
+		HorizontalFlex = Enum.UIFlexAlignment.None,
+		ItemLineAlignment = Enum.ItemLineAlignment.Automatic,
+		VerticalAlignment = Enum.VerticalAlignment.Center,
+		VerticalFlex = Enum.UIFlexAlignment.None,
 	})
 end
 
@@ -184,6 +184,8 @@ end
 
 function defaultcomponents.Button(
 	Scope: Fusion.Scope<typeof(Fusion)>,
+	Text: string,
+	ImageID: number | string,
 	Properties: Dictionary<any>?,
 	Children: Array<any>?
 )
@@ -200,30 +202,61 @@ function defaultcomponents.Button(
 
 	local TransparencyValue = Scope:Value(1)
 
-	local Button = defaultcomponents.ImageButton(Scope, ui.Merge(DefaultProps, Properties), Children, {
-		MouseEnter = function()
-			DampValue:set(0.4)
-			SpeedValue:set(20)
-			ScaleValue:set(1.2)
-			TransparencyValue:set(0)
-		end,
-		MouseLeave = function()
-			DampValue:set(0.4)
-			SpeedValue:set(20)
-			ScaleValue:set(1)
-			TransparencyValue:set(1)
-		end,
-		MouseButton1Down = function()
-			DampValue:set(0.6)
-			SpeedValue:set(30)
-			ScaleValue:set(0.8)
-		end,
-		MouseButton1Click = function()
-			DampValue:set(0.2)
-			SpeedValue:set(30)
-			ScaleValue:set(1.2)
-		end,
-	})
+	local Button = defaultcomponents.ImageButton(
+		Scope,
+		ui.Merge(DefaultProps, Properties),
+		ui.Merge({
+			ui.CreateObject(Scope, "UIScale", {
+				Scale = 1,
+			}),
+			ui.CreateObject(Scope, "UIAspectRatioConstraint", {
+				AspectRatio = 1,
+			}),
+			ui.CreateObject(Scope, "ImageLabel", {
+				BackgroundTransparency = 1,
+				Image = ImageID,
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				Size = UDim2.fromScale(0.8, 0.8),
+				Position = UDim2.fromScale(0.5, 0.5),
+			}),
+			ui.CreateObject(Scope, "UICorner", {
+				CornerRadius = UDim.new(0.1, 0),
+			}),
+			defaultcomponents.TextLabel(Scope, {
+				Text = Text,
+				Size = UDim2.fromScale(1.5, 0.3),
+				Position = UDim2.fromScale(0.5, 0.95),
+			}, {
+				ui.CreateObject(Scope, "UIScale", {
+					Scale = 1,
+				}),
+			}),
+		}, Children),
+		{
+			MouseEnter = function()
+				DampValue:set(0.4)
+				SpeedValue:set(20)
+				ScaleValue:set(1.2)
+				TransparencyValue:set(0)
+			end,
+			MouseLeave = function()
+				DampValue:set(0.4)
+				SpeedValue:set(20)
+				ScaleValue:set(1)
+				TransparencyValue:set(1)
+			end,
+			MouseButton1Down = function()
+				DampValue:set(0.4)
+				SpeedValue:set(40)
+				ScaleValue:set(0.8)
+			end,
+			MouseButton1Click = function()
+				DampValue:set(0.4)
+				SpeedValue:set(25)
+				ScaleValue:set(1.2)
+			end,
+		}
+	)
 
 	Scope:Hydrate(Button.UIScale)({
 		Scale = SpringAnimation,
@@ -243,8 +276,8 @@ function defaultcomponents.ButtonLayout(Scope: Fusion.Scope<typeof(Fusion)>) --,
 		AnchorPoint = Vector2.new(0, 0.5),
 		BackgroundTransparency = 1,
 	}, {
-        defaultcomponents.VerticalCenterStackLayout(Scope)
-    })
+		defaultcomponents.VerticalCenterStackLayout(Scope),
+	})
 
 	defaultcomponents.AspectRatio(Scope, Frame, 0.125)
 
@@ -283,13 +316,13 @@ function defaultcomponents.Bar(Scope: Fusion.Scope<typeof(Fusion)>, BarProgress:
 		BackgroundColor3 = Color3.fromRGB(84, 129, 255),
 	})
 
-    local TargetSize
+	local TargetSize
 
-    if BarProgress then
-        TargetSize = BarProgress
-    else
-        TargetSize = Scope:Value(1)
-    end
+	if BarProgress then
+		TargetSize = BarProgress
+	else
+		TargetSize = Scope:Value(1)
+	end
 
 	local SizeSpring = Scope:Spring(TargetSize, 10, 0.5)
 
@@ -309,7 +342,7 @@ function defaultcomponents.Bar(Scope: Fusion.Scope<typeof(Fusion)>, BarProgress:
 	defaultcomponents.AspectRatio(Scope, VisualBar, 12.951)
 	defaultcomponents.AspectRatio(Scope, FrameHolder, 8.905)
 	defaultcomponents.AspectRatio(Scope, BarHolder, 20.917)
-    
+
 	return FrameHolder
 end
 
@@ -320,13 +353,12 @@ function defaultcomponents.BarLayout(Scope: Fusion.Scope<typeof(Fusion)>): Insta
 		AnchorPoint = Vector2.new(0, 1),
 		BackgroundTransparency = 1,
 	}, {
-        defaultcomponents.VerticalBottomStackLayout,
+		defaultcomponents.VerticalBottomStackLayout,
 	})
 
 	defaultcomponents.AspectRatio(Scope, Frame, 8.905)
 
 	return Frame
 end
-
 
 return defaultcomponents

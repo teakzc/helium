@@ -1,17 +1,15 @@
 --!strict
 
 local Charm = require("../roblox_packages/charm")
-local CharmSync = require("../roblox_packages/charm-sync")
 
 type PlayerAtom = {
 	State: {
-		[string]: any
+		[string]: any,
 	},
 	Data: {
-		[string]: any
+		[string]: any,
 	},
 }
-
 
 type Array<T> = { T }
 type Dictionary<T> = { [string]: T }
@@ -21,10 +19,10 @@ export type Properties = {
 	CharmSyncer: any,
 }
 export type Methods = {
-	CreateCharmSyncer: (self: self, ignoreUnhydrated: boolean) -> (),
-	YieldUntilReadReady: (self: self, Client: Player) -> (),
-	GetState: (self: self, Client: Player) -> Dictionary<any>,
-	GetData: (self: self, Client: Player) -> Dictionary<any>,
+	AddCharmSyncer: (self: self, ignoreUnhydrated: boolean) -> (),
+	YieldUntilReadReady: (self: self) -> (),
+	GetState: (self: self) -> Dictionary<any>,
+	GetData: (self: self) -> Dictionary<any>,
 }
 
 export type self = Methods & Properties
@@ -33,16 +31,11 @@ local clientdata = {
 	PlayerAtom = Charm.atom({}),
 } :: self
 
-function clientdata:CreateCharmSyncer(ignoreUnhydrated: boolean)
-	CharmSync.client({
-		atoms = {
-			PlayerAtom = self.PlayerAtom,
-		},
-		ignoreUnhydrated = ignoreUnhydrated,
-	})
+function clientdata:AddCharmSyncer(CharmSyncer: any)
+	self.CharmSyncer = CharmSyncer
 end
 
-function clientdata:YieldUntilReadReady(Client: Player)
+function clientdata:YieldUntilReadReady()
 	local Ready = false
 	repeat
 		if self.PlayerAtom()["State"] ~= nil and self.PlayerAtom()["Data"] ~= nil then
@@ -53,13 +46,13 @@ function clientdata:YieldUntilReadReady(Client: Player)
 	until Ready == true
 end
 
-function clientdata:GetState(Client: Player)
-	self:YieldUntilReadReady(Client)
+function clientdata:GetState()
+	self:YieldUntilReadReady()
 	return self.PlayerAtom()["State"]
 end
 
-function clientdata:GetData(Client: Player)
-	self:YieldUntilReadReady(Client)
+function clientdata:GetData()
+	self:YieldUntilReadReady()
 	return self.PlayerAtom()["Data"]
 end
 
