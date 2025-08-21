@@ -1,3 +1,6 @@
+luau_packages/
+lune_packages/
+roblox_packages/
 # Project place file
 /*.rbxlx
 
