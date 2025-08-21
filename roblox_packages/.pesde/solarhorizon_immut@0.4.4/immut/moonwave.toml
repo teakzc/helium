@@ -1,6 +1,0 @@
-title = "Immut"
-classOrder = ["Immut"]
-
-[home]
-enabled = true
-includeReadme = false
