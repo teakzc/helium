@@ -2,23 +2,6 @@
 
 local Players = game:GetService("Players")
 
-export type Methods = {
-	AddModules: (self: self, ModuleHolder: Instance | Folder) -> (),
-	AddTarget: (self: self, Target: string, Fn: (any) -> any) -> (),
-	Start: (self: self) -> (),
-}
-
-export type Properties = {
-	ModuleHolder: Instance | Folder,
-	TargettedFunctions: { string },
-	TemporaryFunctions: {
-		[string]: { [string]: any },
-	},
-	AddedFunctions: { (any) -> any },
-}
-
-export type self = Methods & Properties
-
 local modules = {
 	TargettedFunctions = {
 		"Initialize",
@@ -27,22 +10,24 @@ local modules = {
 	},
 	TemporaryFunctions = {},
 	AddedFunctions = {},
-} :: self
+}
 
-function modules:AddModules(ModuleHolder: Instance | Folder)
+export type modules = typeof(modules)
+
+function modules.AddModules(self: modules, ModuleHolder: Instance | Folder)
 	self.ModuleHolder = ModuleHolder
 end
 
-function modules:AddTarget(Target: string, Fn: (TargettedFunctions: { [string]: (any?) -> () }) -> any)
+function modules.AddTarget(self: modules, Target: string, Fn: {Connect: (any, (any) -> ()) -> ()})
 	table.insert(self.TargettedFunctions, Target)
-	table.insert(self.AddedFunctions, Fn(self.TemporaryFunctions[Target]))
+	self.AddedFunctions[Target] = Fn
 end
 
-function modules:Start()
+function modules.Start(self: modules)
 	local ModuleHolder = self.ModuleHolder
 
 	for _, Target in self.TargettedFunctions do
-		self.TemporaryFunctions[Target] = {}
+		self.TemporaryFunctions[Target] = {} --Setting table to store functions for each "TargettedFunctions"
 	end
 
 	for _, Module in ModuleHolder:GetDescendants() do
@@ -63,8 +48,15 @@ function modules:Start()
 	end
 
 	if self.AddedFunctions ~= {} then
-		for _, Function: () -> () in self.AddedFunctions do
-			task.spawn(Function)
+		for Name, Connection in self.AddedFunctions do
+			Connection:Connect(function(...)
+				local Args = { ... }
+				for _, Function in self.TemporaryFunctions[Name] do
+					task.spawn(function()
+						Function(unpack(Args))
+					end)
+				end
+			end)
 		end
 	end
 
