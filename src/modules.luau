@@ -32,18 +32,20 @@ function modules.Start(self: modules)
 
 	for _, Module in ModuleHolder:GetDescendants() do
 		if Module:IsA("ModuleScript") then
-			local success, err = pcall(function()
-				local RequiredModule = require(Module) :: any
-				for _, Target in self.TargettedFunctions do
-					if RequiredModule[Target] then
-						self.TemporaryFunctions[Target][Module.Name] = RequiredModule[Target]
+			task.spawn(function()
+				local success, err = pcall(function()
+					local RequiredModule = require(Module) :: any
+					for _, Target in self.TargettedFunctions do
+						if RequiredModule[Target] then
+							self.TemporaryFunctions[Target][Module.Name] = RequiredModule[Target]
+						end
 					end
+				end)
+
+				if not success then
+					warn(Module.Name .. " has errored! " .. tostring(err))
 				end
 			end)
-
-			if not success then
-				warn(Module.Name .. " has errored! " .. tostring(err))
-			end
 		end
 	end
 

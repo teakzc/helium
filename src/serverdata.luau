@@ -26,27 +26,13 @@ export type Properties = {
 	FunctionsToRun: { (Player: string, NewData: {}, OldData: {}) -> () },
 	CharmSyncer: any,
 }
-export type Methods = {
-	AddCharmSyncer: (self: self, CharmSyncer: any) -> (),
-	LyraCharmSync: (self: self, Key: string, NewData: {}, OldData: {}) -> (),
-	HandleLogs: (Message: any) -> (),
-	OpenStore: (self: self, StoreConfigs: Dictionary<any>) -> (),
-	YieldUntilWriteReady: (self: self, Client: Player) -> (),
-	AddChangedCallbacks: (self: self, Fn: (Key: string, NewData: {}, OldData: {}) -> ()) -> (),
-	SetState: (self: self, Client: Player, Callback: (draft: Dictionary<any>) -> ()) -> (),
-	GetState: (self: self, Client: Player) -> Dictionary<any>,
-	GetStore: (self: self) -> any,
-	UpdateAsync: (self: self, Client: Player, Callback: (any) -> boolean) -> (),
-	UpdateImmutableAsync: (self: self, Client: Player, Callback: (any) -> boolean) -> (),
-	txAsync: (self: self, Client1: Player, Client2: Player, Callback: (any) -> boolean) -> (),
-	txImmutableAsync: (self: self, Client1: Player, Client2: Player, Callback: (any) -> boolean | any) -> (),
-}
-export type self = Methods & Properties
 
 local serverdata = {
 	PlayerAtom = Charm.atom({}),
 	FunctionsToRun = {},
 } :: self
+
+export type self = typeof(serverdata) & Properties
 
 type CharmSyncProperties = {
 	interval: number?,
@@ -54,19 +40,15 @@ type CharmSyncProperties = {
 	autoSerialize: boolean?,
 }
 
-function serverdata:AddCharmSyncer(CharmSyncer: any)
+function serverdata.AddCharmSyncer(self: self, CharmSyncer: any)
 	self.CharmSyncer = CharmSyncer
 end
 
-function serverdata:LyraCharmSync(Key: string, NewData: {}, OldData: {})
+function serverdata.LyraCharmSync(self: self, Key: string, NewData: {}, OldData: {})
 	local Player = Players:GetNameFromUserIdAsync(tonumber(Key))
 
 	if not Player then
 		return
-	end
-
-	for _, Fn in self.FunctionsToRun do
-		Fn(Player, NewData, OldData)
 	end
 
 	self.PlayerAtom(Immut.produce(self.PlayerAtom(), function(draft)
@@ -102,7 +84,7 @@ function serverdata.HandleLogs(message)
 	end
 end
 
-function serverdata:OpenStore(StoreConfigs: Dictionary<any>)
+function serverdata.OpenStore(self: self, StoreConfigs: Dictionary<any>)
 	local Store = Lyra.createPlayerStore(StoreConfigs)
 
 	self.Store = Store
@@ -133,7 +115,7 @@ function serverdata:OpenStore(StoreConfigs: Dictionary<any>)
 	end)
 end
 
-function serverdata:YieldUntilWriteReady(Client: Player)
+function serverdata.YieldUntilWriteReady(self: self, Client: Player)
 	local Ready = false
 	repeat
 		if self.PlayerAtom()[Client.Name] then
@@ -144,11 +126,7 @@ function serverdata:YieldUntilWriteReady(Client: Player)
 	until Ready == true
 end
 
-function serverdata:AddChangedCallbacks(Fn: (Key: string, NewData: {}, OldData: {}) -> ())
-	table.insert(self.FunctionsToRun, Fn)
-end
-
-function serverdata:SetState(Client: Player, Callback: (draft: Dictionary<any>) -> ())
+function serverdata.SetState(self: self, Client: Player, Callback: (draft: Dictionary<any>) -> ())
 	self:YieldUntilWriteReady(Client)
 	self.PlayerAtom(Immut.produce(self.PlayerAtom(), function(draft)
 		Callback(draft[Client.Name]["State"])
@@ -156,34 +134,34 @@ function serverdata:SetState(Client: Player, Callback: (draft: Dictionary<any>) 
 	end))
 end
 
-function serverdata:GetState(Client: Player)
+function serverdata.GetState(self: self, Client: Player)
 	self:YieldUntilWriteReady(Client)
 	return self.PlayerAtom()[Client.Name]["State"]
 end
 
-function serverdata:GetStore()
+function serverdata.GetStore(self: self)
 	return self.Store
 end
 
-function serverdata:UpdateAsync(Client: Player, Callback: (data: any) -> boolean)
+function serverdata.UpdateAsync(self: self, Client: Player, Callback: (data: any) -> boolean)
 	self.Store:updateAsync(Client, function(data)
 		return Callback(data)
 	end)
 end
 
-function serverdata:UpdateImmutableAsync(Client: Player, Callback: (data: any) -> boolean | any)
+function serverdata.UpdateImmutableAsync(self: self, Client: Player, Callback: (data: any) -> boolean | any)
 	self.Store:updateImmutableAsync(Client, function(data)
 		return Callback(data)
 	end)
 end
 
-function serverdata:txAsync(Client1: Player, Client2: Player, Callback: ({ [string]: any }) -> boolean)
+function serverdata.txAsync(self: self, Client1: Player, Client2: Player, Callback: ({ [string]: any }) -> boolean)
 	self.Store:txAsync({ Client1, Client2 }, function(state)
 		return Callback(state)
 	end)
 end
 
-function serverdata:txImmutableAsync(Client1: Player, Client2: Player, Callback: ({ [string]: any }) -> boolean | any)
+function serverdata.txImmutableAsync(self: self, Client1: Player, Client2: Player, Callback: ({ [string]: any }) -> boolean | any)
 	self.Store:txImmutableAsync({ Client1, Client2 }, function(state)
 		return Callback(state)
 	end)

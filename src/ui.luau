@@ -11,21 +11,11 @@ local Subscribe = Charm.subscribe
 type Array<T> = { T }
 type Dictionary<T> = { [string]: T }
 
-export type Methods = {
-	CreateObject: (
-		Scope: Fusion.Scope<typeof(Fusion)>,
-		Object: string,
-		Props: Dictionary<any>?,
-		Child: Array<any>?,
-		Events: Dictionary<any>?
-	) -> Instance,
-}
-
 export type Properties = {}
 
-export type self = Methods & Properties
+local ui = {}
 
-local ui = {} --:: self
+export type self = typeof(ui) & Properties
 
 function ui.CreateObject(
 	Scope: Fusion.Scope<typeof(Fusion)>,

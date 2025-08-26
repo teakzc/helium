@@ -2,7 +2,7 @@
 
 local Charm = require("../roblox_packages/charm")
 
-type PlayerAtom = {
+export type PlayerAtom = {
 	State: {
 		[string]: any,
 	},
@@ -18,24 +18,18 @@ export type Properties = {
 	PlayerAtom: Charm.Atom<PlayerAtom>,
 	CharmSyncer: any,
 }
-export type Methods = {
-	AddCharmSyncer: (self: self, ignoreUnhydrated: boolean) -> (),
-	YieldUntilReadReady: (self: self) -> (),
-	GetState: (self: self) -> Dictionary<any>,
-	GetData: (self: self) -> Dictionary<any>,
-}
-
-export type self = Methods & Properties
 
 local clientdata = {
 	PlayerAtom = Charm.atom({}),
-} :: self
+}
 
-function clientdata:AddCharmSyncer(CharmSyncer: any)
+export type self = typeof(clientdata) & Properties
+
+function clientdata.AddCharmSyncer(self: self, CharmSyncer: any)
 	self.CharmSyncer = CharmSyncer
 end
 
-function clientdata:YieldUntilReadReady()
+function clientdata.YieldUntilReadReady(self: self)
 	local Ready = false
 	repeat
 		if self.PlayerAtom()["State"] ~= nil and self.PlayerAtom()["Data"] ~= nil then
@@ -46,12 +40,12 @@ function clientdata:YieldUntilReadReady()
 	until Ready == true
 end
 
-function clientdata:GetState()
+function clientdata.GetState(self: self)
 	self:YieldUntilReadReady()
 	return self.PlayerAtom()["State"]
 end
 
-function clientdata:GetData()
+function clientdata.GetData(self: self)
 	self:YieldUntilReadReady()
 	return self.PlayerAtom()["Data"]
 end

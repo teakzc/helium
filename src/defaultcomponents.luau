@@ -8,6 +8,8 @@ type Dictionary<T> = { [string]: T }
 
 local defaultcomponents = {}
 
+export type defaultcomponents = typeof(defaultcomponents)
+
 function defaultcomponents.AspectRatio(Scope: Fusion.Scope<typeof(Fusion)>, Parent: Instance, AspectRatio: number)
 	return ui.CreateObject(Scope, "UIAspectRatioConstraint", {
 		AspectRatio = AspectRatio,
@@ -361,4 +363,4 @@ function defaultcomponents.BarLayout(Scope: Fusion.Scope<typeof(Fusion)>): Insta
 	return Frame
 end
 
-return defaultcomponents
+return defaultcomponents :: defaultcomponents
