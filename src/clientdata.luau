@@ -23,7 +23,7 @@ local clientdata = {
 	PlayerAtom = Charm.atom({}),
 }
 
-export type self = typeof(clientdata) & Properties
+export type self = typeof(clientdata)
 
 function clientdata.AddCharmSyncer(self: self, CharmSyncer: any)
 	self.CharmSyncer = CharmSyncer

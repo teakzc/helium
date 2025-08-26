@@ -30,7 +30,7 @@ export type Properties = {
 local serverdata = {
 	PlayerAtom = Charm.atom({}),
 	FunctionsToRun = {},
-} :: self
+}
 
 export type self = typeof(serverdata) & Properties
 
@@ -167,4 +167,4 @@ function serverdata.txImmutableAsync(self: self, Client1: Player, Client2: Playe
 	end)
 end
 
-return serverdata
+return serverdata :: self
