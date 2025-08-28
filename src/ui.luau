@@ -42,7 +42,7 @@ function ui.CreateObject(
 
 	if Props ~= nil then
 		for Property, Value in Props do
-			Properties[Property] = Value
+			Properties[Property :: any] = Value
 		end
 	end
 

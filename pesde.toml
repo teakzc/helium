@@ -1,5 +1,5 @@
 name = "teakzc/helium"
-version = "0.2.2"
+version = "0.2.34"
 description = "Accelerate your game production using helium as the template"
 authors = ["teakzc"]
 includes = [

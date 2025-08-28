@@ -2,6 +2,8 @@
 
 local Charm = require("../roblox_packages/charm")
 
+local modules = require("./modules")
+
 export type PlayerAtom = {
 	State: {
 		[string]: any,
@@ -20,7 +22,10 @@ export type Properties = {
 }
 
 local clientdata = {
-	PlayerAtom = Charm.atom({}),
+	PlayerAtom = Charm.atom({
+		State = {},
+		Data = {}
+	}),
 }
 
 export type self = typeof(clientdata)
@@ -50,6 +55,18 @@ end
 function clientdata.GetData(self: self)
 	self:YieldUntilReadReady()
 	return self.PlayerAtom()["Data"]
+end
+
+function clientdata.InitializeState()
+	local _C
+	_C = Charm.subscribe(clientdata.PlayerAtom, function(current)
+		if current["State"] then
+			if current["State"]["ReadReady"] then
+				modules:StartInitializeState()
+				_C()
+			end
+		end
+	end)
 end
 
 return clientdata

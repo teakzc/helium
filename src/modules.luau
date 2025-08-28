@@ -5,6 +5,7 @@ local Players = game:GetService("Players")
 local modules = {
 	TargettedFunctions = {
 		"Initialize",
+		"InitializeState",
 		"PlayerAdded",
 		"PlayerRemoving",
 	},
@@ -30,8 +31,13 @@ function modules.Start(self: modules)
 		self.TemporaryFunctions[Target] = {} --Setting table to store functions for each "TargettedFunctions"
 	end
 
+	local Count, Tally = 0, 0
+
 	for _, Module in ModuleHolder:GetDescendants() do
 		if Module:IsA("ModuleScript") then
+
+			Count += 1
+
 			task.spawn(function()
 				local success, err = pcall(function()
 					local RequiredModule = require(Module) :: any
@@ -45,9 +51,15 @@ function modules.Start(self: modules)
 				if not success then
 					warn(Module.Name .. " has errored! " .. tostring(err))
 				end
+
+				Tally += 1
 			end)
 		end
 	end
+
+	repeat
+		task.wait()
+	until Tally == Count
 
 	if self.AddedFunctions ~= {} then
 		for Name, Connection in self.AddedFunctions do
@@ -86,6 +98,17 @@ function modules.Start(self: modules)
 			end)
 		end
 	end)
+end
+
+function modules.StartInitializeState(self: modules)
+	for Name, Function: () -> () in self.TemporaryFunctions["InitializeState"] do
+		task.spawn(function()
+			local StartTime = os.clock()
+			Function()
+			local RoundedTime = math.round((os.clock() - StartTime) * 100) / 100
+			print(string.format(Name .. " took [%s] ms to load!", RoundedTime))
+		end)
+	end
 end
 
 return modules

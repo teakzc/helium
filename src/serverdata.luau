@@ -6,6 +6,8 @@ local Lyra = require("../roblox_packages/lyra")
 local Charm = require("../roblox_packages/charm")
 local Immut = require("../roblox_packages/immut")
 
+local state = require("./state")
+
 type PlayerAtom = {
 	[string]: {
 		State: {
@@ -95,7 +97,7 @@ function serverdata.OpenStore(self: self, StoreConfigs: Dictionary<any>)
 		self.PlayerAtom(Immut.produce(self.PlayerAtom(), function(draft)
 			draft[Client.Name] = {
 				Data = {},
-				State = {},
+				State = state.Base
 			}
 			return draft
 		end))
