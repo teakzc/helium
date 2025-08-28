@@ -355,7 +355,7 @@ function defaultcomponents.BarLayout(Scope: Fusion.Scope<typeof(Fusion)>): Insta
 		AnchorPoint = Vector2.new(0, 1),
 		BackgroundTransparency = 1,
 	}, {
-		defaultcomponents.VerticalBottomStackLayout,
+		defaultcomponents.VerticalBottomStackLayout(Scope),
 	})
 
 	defaultcomponents.AspectRatio(Scope, Frame, 8.905)

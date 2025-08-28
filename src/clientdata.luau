@@ -33,7 +33,9 @@ function clientdata.YieldUntilReadReady(self: self)
 	local Ready = false
 	repeat
 		if self.PlayerAtom()["State"] ~= nil and self.PlayerAtom()["Data"] ~= nil then
-			Ready = true
+			if self.PlayerAtom()["State"]["ReadReady"] == true then
+				Ready = true
+			end
 		else
 			task.wait()
 		end
